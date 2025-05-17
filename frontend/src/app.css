@@ -1,79 +1,188 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
+* {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  box-sizing: border-box;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-.card {
-  padding: 2em;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/*create the grid for the items */
+.container {
+  display: grid;
+  grid-template-areas: 
+  'title title title title title title'
+  'line line line line line line'
+  'left leftVert main main rightVert right'
+  'end end end end end end';
   text-align: center;
+  margin: 40px;
+  padding: 0px 20px;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+/*class for the title*/
+.header{
+  display: grid;
+  grid-template-columns: 1fr 475px 1fr;
+  grid-area: title;
+  border-bottom: 1px double black;
+  padding-bottom: 10px;
+  font-size: 15px; 
+  text-align: left;
+  font-family: nyt-franklin, helvetica, arial, sans-serif;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+#date-1 {
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.todays-paper {
+  margin-top: 10px;
+}
+
+/* Make image responsive and edits the size of the images */
+img{
+  width: 100%;
+  height: auto;
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.respImg{
+  align-items: center;
+  max-width: 500px;
+  
+}
+
+/*create the line below the NYTimes logo*/
+.cross{
+  grid-area: line;
+  border-bottom: 1px solid black;
+  padding-top: 2px;
+  margin-bottom: 10px;
+}
+
+/*create the border between the texts*/
+.leftDivider{
+  border-right: 1px solid lightgray;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.leftDivider{grid-area: leftVert;}
+
+.rightDivider{
+  border-right: 1px solid lightgray;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.rightDivider{grid-area: rightVert;}
+
+/* The sections with text and images*/
+.section {
+  padding: 10px; /*makes the box bigger, puts space between text and images*/
+  font-size: 14px;
+  font-family:Georgia, 'Times New Roman', Times, serif
+}
+
+/* Make the header bigger */
+.section h1{
+  font-size: 21px;
+}
+
+/* give spaces for each paragraph */
+.section p{
+  margin-bottom: 10px;
+}
+
+/* Used to create the grid accordingly */
+#left{
+  grid-area: left; margin-left: 20px;
+}
+
+#right{
+  grid-area: right;
+  margin-right: 20px;
+}
+
+#middle{
+  grid-area: main;
+}
+
+/* Make line at the end */
+.end{
+  grid-area: end;
+  margin-top: 20px;
+  border-bottom: 2px solid black;
+}
+
+/* Put a line between sections in the columns */
+.spacer{
+  border-bottom: 1px solid lightgray;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+/*Media Queries*/
+/* 1 column */
+@media (max-width: 740px) {
+  /* Starting row is 3 */
+
+  /*take out the dividers*/
+  .leftDivider,.rightDivider,#date-1,.todays-paper{
+      display: none;
   }
-  a:hover {
-    color: #747bff;
+
+  #middle{
+      grid-area: 3 /span 6;
+      margin-left: 50px;
+      margin-right: 50px;
+      border-bottom: 1px solid lightgray;
   }
-  button {
-    background-color: #f9f9f9;
+
+  #left{
+      grid-area:5/span 6;
+      margin-left: 50px;
+      margin-right: 50px;
+      border-bottom: 1px solid lightgray;
+  }
+
+
+  #right{
+      grid-area: 7/span 6;
+      margin-left: 50px;
+      margin-right: 50px;
+  }
+
+
+  .end{
+      grid-row: 9;
+      /* margin-left: 40px;
+      margin-right: 40px; */
   }
 }
+
+/*two column*/
+@media (min-width: 741px) and (max-width: 1024px) {
+  /*put the middle sections on the left side*/
+  #middle{
+      margin-left: 20px;
+      grid-area: 3/span 2;
+      border-bottom: 1px solid lightgray;
+  }
+
+  #left{
+      grid-area:5/span 2;
+      /*remove bottom border, since they are at the bottom*/
+      border-bottom: 0;
+  }
+
+  .leftDivider,.rightDivider{
+      grid-area: 3/3/span 5 /6;
+  }
+
+  .end{
+      grid-row: 8;
+  }
+
+  #date-1,.todays-paper{
+    display: none;
+  }
+} 
