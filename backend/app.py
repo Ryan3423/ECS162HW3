@@ -1,9 +1,16 @@
-from flask import Flask, redirect, url_for, session
+from flask import Flask, redirect, url_for, session,send_from_directory,jsonify
+from flask_cors import CORS
 from authlib.integrations.flask_client import OAuth
 from authlib.common.security import generate_token
 import os
+import requests
 
-app = Flask(__name__)
+static_path = os.getenv('STATIC_PATH','static')
+template_path = os.getenv('TEMPLATE_PATH','templates')
+
+# app = Flask(__name__)
+app = Flask(__name__, static_folder=static_path, template_folder=template_path)
+CORS(app)
 app.secret_key = os.urandom(24)
 
 
@@ -25,12 +32,35 @@ oauth.register(
     client_kwargs={'scope': 'openid email profile'}
 )
 
+
+# Create route for NYT API
+@app.route('/NYT/api')
+def get_nytapi():
+    NYtimes = 'https://api.nytimes.com/svc/search/v2/articlesearch.json'
+    filter = '?q=("Sacramento", "Davis") AND fq=timesTag.location:"California"&'
+    apiKey = os.getenv('NYT_API_KEY')
+    article_URL = NYtimes + filter + 'api-key=' + apiKey
+    
+    response = requests.get(article_URL)
+    if response:
+        data = response.json()
+        return jsonify(data)
+    else:
+        raise Exception(f"Error: {response.status_code}")
+    
 @app.route('/')
-def home():
-    user = session.get('user')
-    if user:
-        return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
-    return '<a href="/login">Login with Dex</a>'
+@app.route('/<path:path>')
+def serve_frontend(path=''):
+    if path != '' and os.path.exists(os.path.join(static_path,path)):
+        return send_from_directory(static_path, path)
+    return send_from_directory(template_path, 'index.html')
+
+# @app.route('/')
+# def home():
+#     user = session.get('user')
+#     if user:
+#         return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
+#     return '<a href="/login">Login with Dex</a>'
 
 @app.route('/login')
 def login():
@@ -52,5 +82,8 @@ def logout():
     session.clear()
     return redirect('/')
 
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=8000)
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    debug_mode = os.getenv('FLASK_ENV') != 'production'
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8000)),debug=debug_mode)
