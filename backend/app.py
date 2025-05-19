@@ -1,12 +1,19 @@
-from flask import Flask, redirect, url_for, session,send_from_directory,jsonify
+from flask import Flask, redirect, url_for, session,send_from_directory,jsonify,render_template
 from flask_cors import CORS
 from authlib.integrations.flask_client import OAuth
 from authlib.common.security import generate_token
 import os
 import requests
+from pymongo import MongoClient
 
 static_path = os.getenv('STATIC_PATH','static')
 template_path = os.getenv('TEMPLATE_PATH','templates')
+
+# Mongo connection
+mongo_uri = os.getenv("MONGO_URI")
+mongo = MongoClient(mongo_uri)
+db = mongo['mydatabase']
+collection = db['articles']
 
 # app = Flask(__name__)
 app = Flask(__name__, static_folder=static_path, template_folder=template_path)
@@ -33,7 +40,7 @@ oauth.register(
 )
 
 
-# Create route for NYT API
+# Create route for NYT API and add them into data base
 @app.route('/NYT/api')
 def get_nytapi():
     NYtimes = 'https://api.nytimes.com/svc/search/v2/articlesearch.json'
@@ -44,23 +51,38 @@ def get_nytapi():
     response = requests.get(article_URL)
     if response:
         data = response.json()
+
+        # add articles to database
+        articles = data["response"]["docs"]
+        for article in articles:
+            if not collection.find_one({"title": article["headline"]["main"]}):
+                collection.insert_one({
+                    "title": article["headline"]["main"],
+                    "comments": []
+            })
         return jsonify(data)
     else:
         raise Exception(f"Error: {response.status_code}")
     
-# @app.route('/')
+@app.route('/')
 @app.route('/<path:path>')
 def serve_frontend(path=''):
     if path != '' and os.path.exists(os.path.join(static_path,path)):
         return send_from_directory(static_path, path)
     return send_from_directory(template_path, 'index.html')
 
-@app.route('/')
-def home():
+@app.route('/getUser')
+def get_user():
     user = session.get('user')
     if user:
-        return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
-    return '<a href="/login">Login with Dex</a>'
+        return jsonify({'login': True, 'user': user})
+    return jsonify({"login": False, "user": user})
+# @app.route('/')
+# def home():
+#     user = session.get('user')
+#     if user:
+#         return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
+#     return '<a href="/login">Login with Dex</a>'
 
 @app.route('/login')
 def login():
@@ -81,6 +103,10 @@ def authorize():
 def logout():
     session.clear()
     return redirect('/')
+
+@app.route("/test-mongo")
+def test_mongo():
+    return jsonify({"collections": db.list_collection_names()})
 
 # if __name__ == '__main__':
 #     app.run(debug=True, host='0.0.0.0', port=8000)
