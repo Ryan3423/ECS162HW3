@@ -35,19 +35,24 @@
   const commentButtons = document.getElementsByClassName("comment")
   let formSource : string;
   for(let button of commentButtons) {
-    button.addEventListener("click", openSidebar)
+    let title = button.getAttribute("data-title")
+    button.addEventListener("click", () => openSidebar(title))
   }
 
-  function openSidebar(e) {
-    const source = e.target.getAttribute('data-source')
-    formSource = source
-    const comment_overlay = document.getElementById("comment-overlay")
+  function openSidebar(title:string | null) {
+    let comment_overlay = document.getElementById("comment-overlay")
     if (comment_overlay) {
       comment_overlay.style.display = "block"
     }
     document.body.style.overflow = "hidden"
 
-    const xButton = document.getElementById("x-button")
+    let artTitle: Element | null | undefined
+
+    let xButton = document.getElementById("x-button")
+    artTitle = xButton?.previousElementSibling
+    if(artTitle){
+      artTitle.textContent = title
+    }
     xButton?.addEventListener("click", closeSidebar)
 
     const form = document.getElementById("comment-form")
@@ -119,7 +124,7 @@
         alt = {articles[0]?.multimedia?.caption}/>
       <p>{articles[0]?.abstract}</p>
       <div class="button-container">
-        <button class="comment" data-source={articles[0]?._id}>Comment</button>
+        <button class="comment" data-title={articles[0]?.headline?.main}>Comment</button>
       </div>
       <p class = "spacer"></p>
 
@@ -128,7 +133,7 @@
         alt = {articles[3]?.multimedia?.caption}/>
       <p>{articles[3]?.abstract}</p>
       <div class="button-container">
-        <button class="comment"data-source={articles[3]?._id}>Comment</button>
+        <button class="comment" data-title={articles[3]?.headline?.main}>Comment</button>
       </div>
     </div>
     <div class = "leftDivider"></div>
@@ -141,7 +146,7 @@
         alt = {articles[1]?.multimedia?.caption}/>
       <p>{articles[1]?.abstract}</p>
       <div class="button-container">
-        <button class="comment"data-source={articles[1]?._id}>Comment</button>
+        <button class="comment" data-title={articles[1]?.headline?.main}>Comment</button>
       </div>
       <p class = "spacer"></p>
 
@@ -150,7 +155,7 @@
         alt = {articles[4]?.multimedia?.caption}/>
       <p>{articles[4]?.abstract}</p>
       <div class="button-container">
-        <button class="comment"data-source={articles[9]?._id}>Comment</button>
+        <button class="comment" data-title={articles[4]?.headline?.main}>Comment</button>
       </div>
       
     </div>
@@ -163,7 +168,7 @@
         alt = {articles[2]?.multimedia?.caption}/>
       <p>{articles[2]?.abstract}</p>
       <div class="button-container">
-        <button class="comment"data-source={articles[2]?._id}>Comment</button>
+        <button class="comment" data-title={articles[2]?.headline?.main}>Comment</button>
       </div>
       <p class = "spacer"></p>
       
@@ -172,7 +177,7 @@
         alt = {articles[5]?.multimedia?.caption}/>
       <p>{articles[5]?.abstract}</p>
       <div class="button-container">
-        <button class="comment"data-source={articles[5]?._id}>Comment</button>
+        <button class="comment" data-title={articles[5]?.headline?.main}>Comment</button>
       </div>
     </div>
     
