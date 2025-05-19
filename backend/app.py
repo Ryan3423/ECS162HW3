@@ -4,9 +4,16 @@ from authlib.integrations.flask_client import OAuth
 from authlib.common.security import generate_token
 import os
 import requests
+from pymongo import MongoClient
 
 static_path = os.getenv('STATIC_PATH','static')
 template_path = os.getenv('TEMPLATE_PATH','templates')
+
+# Mongo connection
+mongo_uri = os.getenv("MONGO_URI")
+mongo = MongoClient(mongo_uri)
+db = mongo['mydatabase']
+collection = db['comments']
 
 # app = Flask(__name__)
 app = Flask(__name__, static_folder=static_path, template_folder=template_path)
@@ -81,6 +88,10 @@ def authorize():
 def logout():
     session.clear()
     return redirect('/')
+
+@app.route("/test-mongo")
+def test_mongo():
+    return jsonify({"collections": db.list_collection_names()})
 
 # if __name__ == '__main__':
 #     app.run(debug=True, host='0.0.0.0', port=8000)
