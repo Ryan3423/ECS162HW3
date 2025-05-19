@@ -146,7 +146,6 @@
       <div class="button-container">
         <button class="comment">Comment</button>
       </div>
-      <p class = "spacer"></p>
     </div>
     
     <div class = "end"></div>
