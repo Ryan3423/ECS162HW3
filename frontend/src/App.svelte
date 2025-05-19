@@ -2,12 +2,13 @@
   import { onMount } from 'svelte';
   import {getApiKey, createHeader, createImg, createP} from './funct'
 
-  let apiKey: string = '';
+  let login: boolean = false;
+  let user: any = '';
   let articles: any[]= [];
   onMount(async () => {
     try {
       //get the articles using the api key and NYtimes article search
-      const res2 = await fetch('/NYT/api');
+      const res2 = await fetch('http://localhost:8000/NYT/api');
       const data2 = await res2.json();
 
       const nytapi = data2;
@@ -15,6 +16,11 @@
       articles = nytapi.response.docs;
       console.log(articles);
 
+      //Get user info
+      const res3 = await fetch('http://localhost:8000/getUser')
+      const data3 = await res3.json();
+      login = data3.login;
+      user = data3.user;
       //Set date
       const d = new Date()
       let date = document.getElementById("date-1")
@@ -25,12 +31,70 @@
     } catch (error) {
       console.error('Fetch Call Error:', error);
     }
-  });
+
+  const commentButtons = document.getElementsByClassName("comment")
+  let formSource : string;
+  for(let button of commentButtons) {
+    let title = button.getAttribute("data-title")
+    button.addEventListener("click", () => openSidebar(title))
+  }
+
+  function openSidebar(title:string | null) {
+    let comment_overlay = document.getElementById("comment-overlay")
+    if (comment_overlay) {
+      comment_overlay.style.display = "block"
+    }
+    document.body.style.overflow = "hidden"
+
+    let artTitle: Element | null | undefined
+
+    let xButton = document.getElementById("x-button")
+    artTitle = xButton?.previousElementSibling
+    if(artTitle){
+      artTitle.textContent = title
+    }
+    xButton?.addEventListener("click", closeSidebar)
+
+    const form = document.getElementById("comment-form")
+    form?.addEventListener("submit", submitComment)
+  }
+
+  function closeSidebar() {
+    const comment_overlay = document.getElementById("comment-overlay")
+    if (comment_overlay) {
+      comment_overlay.style.display = "none"
+    }
+    document.body.style.overflow = ""
+  }
+
+  async function submitComment(e) {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const content = formData.get("comment-body")
+    const id = formSource
+    try {
+      const response = await fetch("", {
+        method: "POST",
+        body: JSON.stringify({content, id})
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      e.target.reset();
+    } catch(error) {
+      console.error("Submit failed:", error)
+    }
+  }
+
+  
+});
 
 </script>
 
 <main>
-  <div class="container">
+  <div id="container">
     <header class="header">
       <div>
           <p id="date-1">Today's date</p>
@@ -43,7 +107,13 @@
               </path>
           </svg>
       </div>
-      <div></div>
+      <div class="button-container">
+        {#if login}
+          <a href="http://localhost:8000/logout" id="logout">LOG OUT</a>
+        {:else}
+          <a href="http://localhost:8000/login" id="login">LOG IN</a>
+        {/if}
+      </div>
   </header>
     <div class = "cross"></div>
     <!---------------------------- Left section ---------------------------------->
@@ -53,18 +123,18 @@
       <img class = "respImg" src = {articles[0]?.multimedia?.default?.url} 
         alt = {articles[0]?.multimedia?.caption}/>
       <p>{articles[0]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment" data-title={articles[0]?.headline?.main}>Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[3]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[3]?.multimedia?.default?.url} 
         alt = {articles[3]?.multimedia?.caption}/>
       <p>{articles[3]?.abstract}</p>
-      <p class = "spacer"></p>
-
-      <h1>{articles[6]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[6]?.multimedia?.default?.url} 
-        alt = {articles[6]?.multimedia?.caption}/>
-      <p>{articles[6]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment" data-title={articles[3]?.headline?.main}>Comment</button>
+      </div>
     </div>
     <div class = "leftDivider"></div>
 
@@ -75,24 +145,18 @@
       <img class = "respImg" src = {articles[1]?.multimedia?.default?.url} 
         alt = {articles[1]?.multimedia?.caption}/>
       <p>{articles[1]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment" data-title={articles[1]?.headline?.main}>Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[4]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[4]?.multimedia?.default?.url} 
         alt = {articles[4]?.multimedia?.caption}/>
       <p>{articles[4]?.abstract}</p>
-      <p class = "spacer"></p>
-
-      <h1>{articles[7]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[7]?.multimedia?.default?.url} 
-        alt = {articles[7]?.multimedia?.caption}/>
-      <p>{articles[7]?.abstract}</p>
-      <p class = "spacer"></p>
-
-      <h1>{articles[9]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[9]?.multimedia?.default?.url} 
-        alt = {articles[9]?.multimedia?.caption}/>
-      <p>{articles[9]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment" data-title={articles[4]?.headline?.main}>Comment</button>
+      </div>
       
     </div>
     <div class = "rightDivider"></div>
@@ -103,21 +167,45 @@
       <img class = "respImg" src = {articles[2]?.multimedia?.default?.url} 
         alt = {articles[2]?.multimedia?.caption}/>
       <p>{articles[2]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment" data-title={articles[2]?.headline?.main}>Comment</button>
+      </div>
       <p class = "spacer"></p>
       
       <h1>{articles[5]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[5]?.multimedia?.default?.url} 
         alt = {articles[5]?.multimedia?.caption}/>
       <p>{articles[5]?.abstract}</p>
-      <p class = "spacer"></p>
-
-      <h1>{articles[8]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[8]?.multimedia?.default?.url} 
-        alt = {articles[8]?.multimedia?.caption}/>
-      <p>{articles[8]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment" data-title={articles[5]?.headline?.main}>Comment</button>
+      </div>
     </div>
     
     <div class = "end"></div>
+</div>
+<div id="comment-overlay">
+  <div id="overlay"></div>
+  <div id="sidebar"> 
+    <div class="sidebar-header">
+      <h1> Article Title</h1>
+      <button id="x-button">X</button>
+    </div>
+    <p id="sidebar-spacer" class="spacer"></p>
+    <div id="comments-container">
+      <h1>Comments</h1>
+      <form id="comment-form">
+        <input name="comment-body" type="text" placeholder="Share your thoughts..">
+      </form>
+      <div class="comment-content">
+        <h4>User</h4>
+        <div>Comment Body</div>
+        <div class="delete-button">
+          <button>Delete</button>
+        </div>
+      </div>
+      <p class="spacer"></p>
+    </div>
+  </div>
 </div>
 </main>
 
