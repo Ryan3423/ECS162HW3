@@ -7,7 +7,7 @@
   onMount(async () => {
     try {
       //get the articles using the api key and NYtimes article search
-      const res2 = await fetch('/NYT/api');
+      const res2 = await fetch('http://localhost:8000/NYT/api');
       const data2 = await res2.json();
 
       const nytapi = data2;
@@ -43,7 +43,9 @@
               </path>
           </svg>
       </div>
-      <div></div>
+      <div class="button-container">
+        <button id="login">LOG IN</button>
+      </div>
   </header>
     <div class = "cross"></div>
     <!---------------------------- Left section ---------------------------------->
@@ -53,18 +55,27 @@
       <img class = "respImg" src = {articles[0]?.multimedia?.default?.url} 
         alt = {articles[0]?.multimedia?.caption}/>
       <p>{articles[0]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[3]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[3]?.multimedia?.default?.url} 
         alt = {articles[3]?.multimedia?.caption}/>
       <p>{articles[3]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[6]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[6]?.multimedia?.default?.url} 
         alt = {articles[6]?.multimedia?.caption}/>
       <p>{articles[6]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
     </div>
     <div class = "leftDivider"></div>
 
@@ -75,24 +86,36 @@
       <img class = "respImg" src = {articles[1]?.multimedia?.default?.url} 
         alt = {articles[1]?.multimedia?.caption}/>
       <p>{articles[1]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[4]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[4]?.multimedia?.default?.url} 
         alt = {articles[4]?.multimedia?.caption}/>
       <p>{articles[4]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[7]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[7]?.multimedia?.default?.url} 
         alt = {articles[7]?.multimedia?.caption}/>
       <p>{articles[7]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[9]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[9]?.multimedia?.default?.url} 
         alt = {articles[9]?.multimedia?.caption}/>
       <p>{articles[9]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       
     </div>
     <div class = "rightDivider"></div>
@@ -103,18 +126,27 @@
       <img class = "respImg" src = {articles[2]?.multimedia?.default?.url} 
         alt = {articles[2]?.multimedia?.caption}/>
       <p>{articles[2]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
       
       <h1>{articles[5]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[5]?.multimedia?.default?.url} 
         alt = {articles[5]?.multimedia?.caption}/>
       <p>{articles[5]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
       <p class = "spacer"></p>
 
       <h1>{articles[8]?.headline?.main}</h1>
       <img class = "respImg" src = {articles[8]?.multimedia?.default?.url} 
         alt = {articles[8]?.multimedia?.caption}/>
       <p>{articles[8]?.abstract}</p>
+      <div class="button-container">
+        <button class="comment">Comment</button>
+      </div>
     </div>
     
     <div class = "end"></div>

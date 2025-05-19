@@ -37,6 +37,47 @@
   margin-top: 10px;
 }
 
+.button-container {
+  text-align: right;
+}
+
+#login, .comment {
+  font-family: nyt-franklin, helvetica, arial, sans-serif;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+#login {
+  background-color: #567B94;
+  font-weight: bold;
+  color: white;
+  font-size: 14px;
+  margin-top: 5px;
+  margin-right: 5px;
+  padding: 10px 15px;
+  border-style: none;
+  border-radius: 10px;
+}
+
+#login:hover {
+  background-color: #32566e;
+  cursor: cli;
+}
+
+.comment {
+  background-color: #FCFEFF;
+  border-color: #BFBDBD;
+  border-style: solid;
+  border-width: 1px;
+  padding: 5px 10px;
+  border-radius: 15px;
+  margin-top: 10px;
+}
+
+.comment:hover {
+  background-color: #e6e6e6;
+}
+
 /* Make image responsive and edits the size of the images */
 img{
   width: 100%;

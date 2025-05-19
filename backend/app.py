@@ -48,19 +48,19 @@ def get_nytapi():
     else:
         raise Exception(f"Error: {response.status_code}")
     
-@app.route('/')
+# @app.route('/')
 @app.route('/<path:path>')
 def serve_frontend(path=''):
     if path != '' and os.path.exists(os.path.join(static_path,path)):
         return send_from_directory(static_path, path)
     return send_from_directory(template_path, 'index.html')
 
-# @app.route('/')
-# def home():
-#     user = session.get('user')
-#     if user:
-#         return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
-#     return '<a href="/login">Login with Dex</a>'
+@app.route('/')
+def home():
+    user = session.get('user')
+    if user:
+        return f"<h2>Logged in as {user['email']}</h2><a href='/logout'>Logout</a>"
+    return '<a href="/login">Login with Dex</a>'
 
 @app.route('/login')
 def login():

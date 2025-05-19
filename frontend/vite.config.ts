@@ -17,5 +17,13 @@ export default defineConfig(({ mode }) => ({
         }
       },
     },
+       watch: {
+      usePolling: true,  // Important for Docker environments
+    },
+    hmr: {
+      host: '0.0.0.0',
+      port: 5173,
+      protocol: 'ws',
+    },
   } : undefined,
 }))
