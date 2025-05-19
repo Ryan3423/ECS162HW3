@@ -2,7 +2,8 @@
   import { onMount } from 'svelte';
   import {getApiKey, createHeader, createImg, createP} from './funct'
 
-  let apiKey: string = '';
+  let login: boolean = false;
+  let user: any = '';
   let articles: any[]= [];
   onMount(async () => {
     try {
@@ -15,6 +16,11 @@
       articles = nytapi.response.docs;
       console.log(articles);
 
+      //Get user info
+      const res3 = await fetch('http://localhost:8000/getUser')
+      const data3 = await res3.json();
+      login = data3.login;
+      user = data3.user;
       //Set date
       const d = new Date()
       let date = document.getElementById("date-1")
@@ -26,30 +32,58 @@
       console.error('Fetch Call Error:', error);
     }
 
-  let commentButtons = document.getElementsByClassName("comment")
+  const commentButtons = document.getElementsByClassName("comment")
+  let formSource : string;
   for(let button of commentButtons) {
     button.addEventListener("click", openSidebar)
   }
 
-  function openSidebar() {
-    let comment_overlay = document.getElementById("comment-overlay")
+  function openSidebar(e) {
+    const source = e.target.getAttribute('data-source')
+    formSource = source
+    const comment_overlay = document.getElementById("comment-overlay")
     if (comment_overlay) {
       comment_overlay.style.display = "block"
     }
     document.body.style.overflow = "hidden"
 
-    let xButton = document.getElementById("x-button")
+    const xButton = document.getElementById("x-button")
     xButton?.addEventListener("click", closeSidebar)
+
+    const form = document.getElementById("comment-form")
+    form?.addEventListener("submit", submitComment)
   }
 
   function closeSidebar() {
-    let comment_overlay = document.getElementById("comment-overlay")
+    const comment_overlay = document.getElementById("comment-overlay")
     if (comment_overlay) {
       comment_overlay.style.display = "none"
     }
     document.body.style.overflow = ""
   }
 
+  async function submitComment(e) {
+    e.preventDefault()
+    const formData = new FormData(e.target)
+    const content = formData.get("comment-body")
+    const id = formSource
+    try {
+      const response = await fetch("", {
+        method: "POST",
+        body: JSON.stringify({content, id})
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+
+      e.target.reset();
+    } catch(error) {
+      console.error("Submit failed:", error)
+    }
+  }
+
+  
 });
 
 </script>
@@ -69,7 +103,11 @@
           </svg>
       </div>
       <div class="button-container">
-        <button id="login">LOG IN</button>
+        {#if login}
+          <a href="http://localhost:8000/logout" id="logout">LOG OUT</a>
+        {:else}
+          <a href="http://localhost:8000/login" id="login">LOG IN</a>
+        {/if}
       </div>
   </header>
     <div class = "cross"></div>
@@ -81,7 +119,7 @@
         alt = {articles[0]?.multimedia?.caption}/>
       <p>{articles[0]?.abstract}</p>
       <div class="button-container">
-        <button class="comment">Comment</button>
+        <button class="comment" data-source={articles[0]?._id}>Comment</button>
       </div>
       <p class = "spacer"></p>
 
@@ -90,7 +128,7 @@
         alt = {articles[3]?.multimedia?.caption}/>
       <p>{articles[3]?.abstract}</p>
       <div class="button-container">
-        <button class="comment">Comment</button>
+        <button class="comment"data-source={articles[3]?._id}>Comment</button>
       </div>
       <p class = "spacer"></p>
 
@@ -112,7 +150,7 @@
         alt = {articles[1]?.multimedia?.caption}/>
       <p>{articles[1]?.abstract}</p>
       <div class="button-container">
-        <button class="comment">Comment</button>
+        <button class="comment"data-source={articles[1]?._id}>Comment</button>
       </div>
       <p class = "spacer"></p>
 
@@ -139,7 +177,7 @@
         alt = {articles[9]?.multimedia?.caption}/>
       <p>{articles[9]?.abstract}</p>
       <div class="button-container">
-        <button class="comment">Comment</button>
+        <button class="comment"data-source={articles[9]?._id}>Comment</button>
       </div>
       
     </div>
@@ -152,7 +190,7 @@
         alt = {articles[2]?.multimedia?.caption}/>
       <p>{articles[2]?.abstract}</p>
       <div class="button-container">
-        <button class="comment">Comment</button>
+        <button class="comment"data-source={articles[2]?._id}>Comment</button>
       </div>
       <p class = "spacer"></p>
       
@@ -161,7 +199,7 @@
         alt = {articles[5]?.multimedia?.caption}/>
       <p>{articles[5]?.abstract}</p>
       <div class="button-container">
-        <button class="comment">Comment</button>
+        <button class="comment"data-source={articles[5]?._id}>Comment</button>
       </div>
       <p class = "spacer"></p>
 
@@ -186,8 +224,8 @@
     <p id="sidebar-spacer" class="spacer"></p>
     <div id="comments-container">
       <h1>Comments</h1>
-      <form>
-        <input type="text" placeholder="Share your thoughts..">
+      <form id="comment-form">
+        <input name="comment-body" type="text" placeholder="Share your thoughts..">
       </form>
       <div class="comment-content">
         <h4>User</h4>
@@ -201,3 +239,4 @@
   </div>
 </div>
 </main>
+
