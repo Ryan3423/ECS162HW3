@@ -2,7 +2,8 @@
   import { onMount } from 'svelte';
   import {getApiKey, createHeader, createImg, createP} from './funct'
 
-  let apiKey: string = '';
+  let login: boolean = false;
+  let user: any = '';
   let articles: any[]= [];
   onMount(async () => {
     try {
@@ -15,6 +16,11 @@
       articles = nytapi.response.docs;
       console.log(articles);
 
+      //Get user info
+      const res3 = await fetch('http://localhost:8000/getUser')
+      const data3 = await res3.json();
+      login = data3.login;
+      user = data3.user;
       //Set date
       const d = new Date()
       let date = document.getElementById("date-1")
@@ -69,7 +75,11 @@
           </svg>
       </div>
       <div class="button-container">
-        <button id="login">LOG IN</button>
+        {#if login}
+          <a href="http://localhost:8000/logout" id="logout">LOG OUT</a>
+        {:else}
+          <a href="http://localhost:8000/login" id="login">LOG IN</a>
+        {/if}
       </div>
   </header>
     <div class = "cross"></div>
