@@ -32,7 +32,7 @@
       console.error('Fetch Call Error:', error);
     }
 
-  let commentButtons = document.getElementsByClassName("comment")
+    let commentButtons = document.getElementsByClassName("comment")
   for(let button of commentButtons) {
     button.addEventListener("click", openSidebar)
   }
@@ -56,7 +56,7 @@
     document.body.style.overflow = ""
   }
 
-});
+  });
 
 </script>
 
@@ -102,15 +102,6 @@
       <div class="button-container">
         <button class="comment">Comment</button>
       </div>
-      <p class = "spacer"></p>
-
-      <h1>{articles[6]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[6]?.multimedia?.default?.url} 
-        alt = {articles[6]?.multimedia?.caption}/>
-      <p>{articles[6]?.abstract}</p>
-      <div class="button-container">
-        <button class="comment">Comment</button>
-      </div>
     </div>
     <div class = "leftDivider"></div>
 
@@ -130,24 +121,6 @@
       <img class = "respImg" src = {articles[4]?.multimedia?.default?.url} 
         alt = {articles[4]?.multimedia?.caption}/>
       <p>{articles[4]?.abstract}</p>
-      <div class="button-container">
-        <button class="comment">Comment</button>
-      </div>
-      <p class = "spacer"></p>
-
-      <h1>{articles[7]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[7]?.multimedia?.default?.url} 
-        alt = {articles[7]?.multimedia?.caption}/>
-      <p>{articles[7]?.abstract}</p>
-      <div class="button-container">
-        <button class="comment">Comment</button>
-      </div>
-      <p class = "spacer"></p>
-
-      <h1>{articles[9]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[9]?.multimedia?.default?.url} 
-        alt = {articles[9]?.multimedia?.caption}/>
-      <p>{articles[9]?.abstract}</p>
       <div class="button-container">
         <button class="comment">Comment</button>
       </div>
@@ -174,14 +147,6 @@
         <button class="comment">Comment</button>
       </div>
       <p class = "spacer"></p>
-
-      <h1>{articles[8]?.headline?.main}</h1>
-      <img class = "respImg" src = {articles[8]?.multimedia?.default?.url} 
-        alt = {articles[8]?.multimedia?.caption}/>
-      <p>{articles[8]?.abstract}</p>
-      <div class="button-container">
-        <button class="comment">Comment</button>
-      </div>
     </div>
     
     <div class = "end"></div>
@@ -211,3 +176,4 @@
   </div>
 </div>
 </main>
+
