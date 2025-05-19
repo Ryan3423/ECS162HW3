@@ -25,12 +25,37 @@
     } catch (error) {
       console.error('Fetch Call Error:', error);
     }
-  });
+
+  let commentButtons = document.getElementsByClassName("comment")
+  for(let button of commentButtons) {
+    button.addEventListener("click", openSidebar)
+  }
+
+  function openSidebar() {
+    let comment_overlay = document.getElementById("comment-overlay")
+    if (comment_overlay) {
+      comment_overlay.style.display = "block"
+    }
+    document.body.style.overflow = "hidden"
+
+    let xButton = document.getElementById("x-button")
+    xButton?.addEventListener("click", closeSidebar)
+  }
+
+  function closeSidebar() {
+    let comment_overlay = document.getElementById("comment-overlay")
+    if (comment_overlay) {
+      comment_overlay.style.display = "none"
+    }
+    document.body.style.overflow = ""
+  }
+
+});
 
 </script>
 
 <main>
-  <div class="container">
+  <div id="container">
     <header class="header">
       <div>
           <p id="date-1">Today's date</p>
@@ -151,5 +176,28 @@
     
     <div class = "end"></div>
 </div>
+<div id="comment-overlay">
+  <div id="overlay"></div>
+  <div id="sidebar"> 
+    <div class="sidebar-header">
+      <h1> Article Title</h1>
+      <button id="x-button">X</button>
+    </div>
+    <p id="sidebar-spacer" class="spacer"></p>
+    <div id="comments-container">
+      <h1>Comments</h1>
+      <form>
+        <input type="text" placeholder="Share your thoughts..">
+      </form>
+      <div class="comment-content">
+        <h4>User</h4>
+        <div>Comment Body</div>
+        <div class="delete-button">
+          <button>Delete</button>
+        </div>
+      </div>
+      <p class="spacer"></p>
+    </div>
+  </div>
+</div>
 </main>
-
